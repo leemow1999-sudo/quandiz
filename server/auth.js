@@ -61,6 +61,9 @@ export function clearSessionCookie(res) {
 
 export function isLoggedIn(req) {
   if (!authEnabled()) return true;
+  // Web app dùng cookie phiên; tiện ích trình duyệt gửi thẳng mật khẩu qua header
+  // vì cookie không đi kèm khi gọi từ extension sang máy chủ khác miền.
+  if (checkPasscode(req.headers['x-passcode'])) return true;
   return verifyToken(parseCookies(req.headers.cookie).q_auth);
 }
 

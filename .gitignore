@@ -6,3 +6,4 @@ node_modules/
 
 # icon PNG được sinh lại bằng `npm run icons` (chạy tự động sau npm install)
 public/icons/*.png
+extension/icons/*.png

@@ -5,7 +5,8 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
-const outDir = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), 'public', 'icons');
+const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const outDirs = [path.join(root, 'public', 'icons'), path.join(root, 'extension', 'icons')];
 const SS = 3; // hệ số siêu lấy mẫu
 
 /* ---- PNG encoder tối giản (RGBA, không nén filter) ---- */
@@ -143,13 +144,19 @@ function drawIcon(size, corner, inset) {
   return encodePNG(size, size, out);
 }
 
-fs.mkdirSync(outDir, { recursive: true });
 const files = [
+  ['icon-48.png', drawIcon(48, 112 / 512, 0)],
   ['icon-192.png', drawIcon(192, 112 / 512, 0)],
   ['icon-512.png', drawIcon(512, 112 / 512, 0)],
   ['icon-maskable-512.png', drawIcon(512, 0, 0.18)],
 ];
-for (const [name, buf] of files) {
-  fs.writeFileSync(path.join(outDir, name), buf);
-  console.log(`✓ ${name} (${(buf.length / 1024).toFixed(1)} KB)`);
+
+for (const dir of outDirs) {
+  // extension/ có thể chưa tồn tại khi ai đó chỉ lấy phần web — bỏ qua, không lỗi.
+  if (!fs.existsSync(path.dirname(dir))) continue;
+  fs.mkdirSync(dir, { recursive: true });
+  for (const [name, buf] of files) {
+    fs.writeFileSync(path.join(dir, name), buf);
+  }
+  console.log(`✓ ${files.length} icon → ${path.relative(root, dir)}`);
 }

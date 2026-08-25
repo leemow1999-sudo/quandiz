@@ -7,17 +7,28 @@ Shop trả lời tiếng Trung → bạn dán vào app → ra tiếng Việt nga
 
 Toàn bộ hội thoại hiện dưới dạng khung chat quen thuộc, kèm bản gốc để đối chiếu.
 
+Repo có **hai phần**, dùng chung một máy chủ dịch:
+
+- **App web (PWA)** — cài vào màn hình chính điện thoại, dùng cạnh app 1688. Quy trình chép–dán.
+- **Tiện ích Chrome** — cho bản web `1688.com` trên máy tính. Dịch thẳng trong khung chat, khỏi chép–dán.
+
 ---
 
 ## Điều cần biết trước
 
-App 1688 chính thức **không cho phần mềm ngoài chèn nội dung vào khung chat của nó** — Alibaba không mở API cho việc này, và mọi cách "tiêm" chữ vào app người khác đều dễ bị khoá tài khoản. Vì vậy quy trình ở đây là **chép — dán**, nhanh gọn chỉ 2 chạm:
+**App 1688 trên điện thoại không cho phần mềm ngoài chèn chữ vào khung chat của nó** — Alibaba không
+mở API cho việc này, và mọi cách "tiêm" chữ vào app người khác đều dễ bị khoá tài khoản. Nên trên
+điện thoại, quy trình là **chép — dán**, nhanh gọn 2 chạm:
 
 1. Gõ tiếng Việt trong app này → bấm gửi. Bản tiếng Trung tự vào clipboard.
 2. Mở 1688, dán vào chat của shop.
 3. Shop trả lời → giữ để copy tin tiếng Trung → quay lại app này, bấm **📋 Dán** → đọc tiếng Việt.
 
 Trên Android còn nhanh hơn: bôi đen tin tiếng Trung trong app 1688 → **Chia sẻ** → chọn **Dịch 1688** → app tự mở và dịch luôn (dùng tính năng *share target* của PWA).
+
+Còn **trên máy tính, dùng 1688 bản web thì không phải chép–dán**: cài tiện ích Chrome trong repo này,
+gõ tiếng Việt thẳng vào khung chat rồi bấm <kbd>Alt</kbd>+<kbd>Z</kbd>. Xem mục
+[Tiện ích Chrome](#tiện-ích-chrome-cho-1688-bản-web) bên dưới.
 
 ---
 
@@ -123,6 +134,32 @@ docker run -p 3000:3000 -e ANTHROPIC_API_KEY=sk-ant-... -e APP_PASSCODE=matkhauc
 
 ---
 
+## Tiện ích Chrome cho 1688 bản web
+
+Dùng trên máy tính thì không phải chép–dán nữa: gõ tiếng Việt thẳng vào khung chat của 1688, bấm
+<kbd>Alt</kbd>+<kbd>Z</kbd>, chữ trong ô đổi thành tiếng Trung, bấm gửi như bình thường.
+Bôi đen chữ Trung bất kỳ trên trang thì hiện nghĩa tiếng Việt ngay tại chỗ.
+
+**Cài (chưa lên Chrome Web Store, cài thủ công):**
+
+1. Chạy `npm install` một lần để sinh icon cho tiện ích.
+2. Mở `chrome://extensions` → bật **Developer mode** (góc phải trên).
+3. Bấm **Load unpacked** → chọn thư mục `extension/` trong repo này.
+4. Bấm vào icon tiện ích → điền địa chỉ máy chủ (ví dụ `https://ten-app.onrender.com`) và mật khẩu
+   nếu bạn có đặt `APP_PASSCODE` → **Lưu & kiểm tra kết nối**.
+
+Chrome sẽ hỏi cấp quyền cho đúng địa chỉ máy chủ bạn nhập — tiện ích chỉ xin quyền tới địa chỉ đó,
+không xin quyền đọc toàn bộ web.
+
+**Vì sao tiện ích không dò theo giao diện 1688:** class và id trên 1688.com là mã sinh tự động và đổi
+liên tục, dò theo thì hôm nay chạy mai hỏng. Tiện ích chỉ làm việc với **ô đang được focus** và
+**vùng chữ đang bôi đen**, nên 1688 đổi giao diện thì nó vẫn chạy. Đổi lại là bạn phải bấm phím tắt
+chứ không tự dịch mọi tin nhắn.
+
+Tiện ích chạy trên `1688.com`, `taobao.com`, `tmall.com` và `alibaba.com`.
+
+---
+
 ## Cấu hình (`.env`)
 
 | Biến | Mặc định | Ý nghĩa |
@@ -157,7 +194,11 @@ server/
     claude.js       gọi Claude API (prompt dịch + bảng thuật ngữ)
     google.js       Google Dịch miễn phí (dự phòng)
 public/             giao diện PWA (HTML/CSS/JS thuần, không framework)
-scripts/gen-icons.js  sinh icon PNG cho PWA (chạy tự động sau `npm install`)
+extension/          tiện ích Chrome (MV3)
+  content.js        chèn bản dịch vào trang, giao diện dựng trong Shadow DOM
+  background.js     service worker gọi máy chủ dịch
+  options.js        trang cài đặt: địa chỉ máy chủ + mật khẩu
+scripts/gen-icons.js  sinh icon PNG cho PWA và cho tiện ích (chạy tự động sau `npm install`)
 ```
 
 ### API
@@ -171,11 +212,12 @@ scripts/gen-icons.js  sinh icon PNG cho PWA (chạy tự động sau `npm instal
 | `POST /api/login` | `{ passcode }` → đặt cookie phiên 90 ngày |
 | `POST /api/logout` | Xoá cookie phiên |
 
+App web dùng cookie phiên; tiện ích Chrome gửi mật khẩu qua header `x-passcode` vì cookie không đi
+kèm khi gọi từ tiện ích sang máy chủ khác miền.
+
 ---
 
 ## Hướng phát triển tiếp
 
-- **Tiện ích trình duyệt** cho bản web `1688.com` trên máy tính — chỗ đó chèn thẳng bản dịch vào
-  khung chat được, không cần copy/paste nữa.
 - **Dịch ảnh**: chụp màn hình chat hoặc trang sản phẩm rồi dịch (Claude đọc được ảnh).
 - **Ghi nhớ theo shop**: mỗi shop một hội thoại riêng, kèm ghi chú giá đã chốt.

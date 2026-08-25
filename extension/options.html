@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<title>Dịch Chat 1688 — Cài đặt</title>
+<style>
+  body {
+    width: 320px;
+    margin: 0;
+    padding: 18px;
+    background: #0f1115;
+    color: #e8eaf0;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+  }
+  h1 { margin: 0 0 4px; font-size: 16px; }
+  p.sub { margin: 0 0 16px; color: #949bab; font-size: 12.5px; line-height: 1.5; }
+  label { display: block; margin-bottom: 6px; font-size: 12.5px; color: #949bab; }
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #2a2f3a;
+    background: #1e222b;
+    color: #e8eaf0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  input:focus { outline: none; border-color: #ff5400; }
+  button {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    background: #ff5400;
+    color: #fff;
+    padding: 11px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .status { margin-top: 12px; font-size: 12.5px; line-height: 1.5; min-height: 18px; }
+  .ok { color: #37d67a; }
+  .err { color: #ff5f56; }
+  .help {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2f3a;
+    color: #949bab;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .help b { color: #e8eaf0; }
+  kbd {
+    background: #1e222b;
+    border: 1px solid #2a2f3a;
+    border-radius: 5px;
+    padding: 1px 5px;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+  <h1>Dịch Chat 1688</h1>
+  <p class="sub">Trỏ tiện ích về máy chủ dịch của bạn.</p>
+
+  <label for="server">Địa chỉ máy chủ</label>
+  <input id="server" type="url" placeholder="https://ten-app.onrender.com" />
+
+  <label for="passcode">Mật khẩu (nếu máy chủ có đặt APP_PASSCODE)</label>
+  <input id="passcode" type="password" placeholder="để trống nếu không đặt" />
+
+  <button id="save">Lưu &amp; kiểm tra kết nối</button>
+  <div class="status" id="status"></div>
+
+  <div class="help">
+    <b>Dùng thế nào</b><br />
+    • Gõ tiếng Việt vào khung chat 1688 → bấm <kbd>Alt</kbd>+<kbd>Z</kbd> hoặc nút tròn 译 góc phải → chữ trong ô đổi thành tiếng Trung, bấm gửi như thường.<br />
+    • Bôi đen chữ Trung bất kỳ trên trang → bấm nút <b>译 → tiếng Việt</b> hiện ra.
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
