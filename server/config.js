@@ -37,6 +37,10 @@ export const config = {
     maxTokens: int(process.env.ANTHROPIC_MAX_TOKENS, 2000),
   },
 
+  // Đặt APP_PASSCODE khi mở app ra Internet, để người lạ không xài chùa API key.
+  // Để trống thì app không hỏi mật khẩu (hợp khi chỉ chạy ở máy nhà).
+  passcode: process.env.APP_PASSCODE || '',
+
   // Số cặp tin nhắn gần nhất gửi kèm làm ngữ cảnh cho bản dịch
   contextTurns: int(process.env.CONTEXT_TURNS, 6),
   cacheSize: int(process.env.CACHE_SIZE, 500),

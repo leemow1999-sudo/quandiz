@@ -1,0 +1,18 @@
+# Deploy lên Render: New → Blueprint → trỏ vào repo này.
+# Gói free ngủ sau 15 phút không dùng, lần mở đầu tiên chờ ~30 giây rồi chạy bình thường.
+services:
+  - type: web
+    name: dich-chat-1688
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Hai biến dưới đây tự điền trong Dashboard, KHÔNG commit vào repo.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: APP_PASSCODE
+        sync: false

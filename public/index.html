@@ -17,19 +17,22 @@
 <body>
 
 <header class="topbar">
-  <div class="brand">
+  <button type="button" class="shop-btn" id="shop-btn">
     <span class="brand-mark">译</span>
-    <div class="brand-text">
-      <strong>Dịch Chat 1688</strong>
+    <span class="shop-meta">
+      <strong id="shop-name">Shop</strong>
       <span id="status" class="status">Đang kiểm tra…</span>
-    </div>
-  </div>
+    </span>
+    <span class="caret">▾</span>
+  </button>
   <div class="topbar-actions">
     <button type="button" class="icon-btn" data-sheet="phrases" title="Mẫu câu">💬</button>
     <button type="button" class="icon-btn" data-sheet="glossary" title="Từ điển 1688">📖</button>
     <button type="button" class="icon-btn" data-sheet="settings" title="Cài đặt">⚙️</button>
   </div>
 </header>
+
+<div class="shop-note" id="shop-note" hidden></div>
 
 <main id="chat" class="chat" aria-live="polite">
   <div class="empty" id="empty">
@@ -61,8 +64,19 @@
   </div>
 </form>
 
-<!-- Sheets -->
+<!-- Bảng trượt -->
 <div class="sheet-backdrop" id="backdrop" hidden></div>
+
+<section class="sheet" id="sheet-shops" hidden>
+  <div class="sheet-head">
+    <h3>Shop đang chat</h3>
+    <button type="button" class="icon-btn" data-close>✕</button>
+  </div>
+  <div class="sheet-body">
+    <button type="button" class="add-shop" id="add-shop">＋ Thêm shop mới</button>
+    <div id="shops-list"></div>
+  </div>
+</section>
 
 <section class="sheet" id="sheet-phrases" hidden>
   <div class="sheet-head"><h3>Mẫu câu hay dùng</h3><button type="button" class="icon-btn" data-close>✕</button></div>
@@ -83,7 +97,7 @@
       <input type="checkbox" id="opt-autocopy" checked />
     </label>
     <label class="row-toggle">
-      <span><strong>Dùng ngữ cảnh hội thoại</strong><small>Gửi kèm vài tin gần nhất để dịch sát nghĩa hơn</small></span>
+      <span><strong>Dùng ngữ cảnh hội thoại</strong><small>Gửi kèm vài tin gần nhất của shop này để dịch sát nghĩa hơn</small></span>
       <input type="checkbox" id="opt-context" checked />
     </label>
     <label class="row-toggle">
@@ -91,9 +105,22 @@
       <input type="checkbox" id="opt-original" checked />
     </label>
     <div class="info" id="engine-info">…</div>
-    <button type="button" class="danger-btn" id="clear-history">Xoá toàn bộ hội thoại</button>
+    <button type="button" class="danger-btn" id="clear-history">Xoá hội thoại của shop này</button>
+    <button type="button" class="ghost-btn wide" id="logout" hidden>Đăng xuất</button>
   </div>
 </section>
+
+<!-- Màn khoá -->
+<div class="lock" id="lock" hidden>
+  <form class="lock-card" id="lock-form">
+    <span class="brand-mark lock-mark">译</span>
+    <h2>Dịch Chat 1688</h2>
+    <p>Nhập mật khẩu để dùng app.</p>
+    <input type="password" id="lock-input" placeholder="Mật khẩu" autocomplete="current-password" />
+    <button type="submit" class="lock-submit">Mở khoá</button>
+    <div class="lock-error" id="lock-error" hidden></div>
+  </form>
+</div>
 
 <script src="app.js" type="module"></script>
 </body>

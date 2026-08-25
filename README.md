@@ -74,6 +74,8 @@ Máy tính và điện thoại phải chung một mạng Wi‑Fi.
 | **Dịch theo ngữ cảnh** | Gửi kèm vài tin gần nhất nên đại từ, "cái đó", "mẫu này" được hiểu đúng. |
 | **Từ điển 1688** | 53 thuật ngữ buôn hàng kèm phiên âm — tra ngay trong app. |
 | **Mẫu câu sẵn** | 26 câu hay dùng (hỏi giá, MOQ, ship, đổi trả) đã dịch sẵn, chạm là chép, không tốn lượt gọi API. |
+| **Hội thoại riêng từng shop** | Mỗi shop một luồng chat, kèm tên, ghi chú (giá đã chốt, MOQ) và link sản phẩm. Ngữ cảnh dịch chỉ lấy trong shop đang mở nên không lẫn. |
+| **Khoá bằng mật khẩu** | Đặt `APP_PASSCODE` là app hỏi mật khẩu, khỏi lo người lạ xài chùa API key khi mở ra Internet. |
 | **Lưu hội thoại** | Lưu trong máy (localStorage), mở lại vẫn còn. Không gửi đi đâu ngoài lượt dịch. |
 | **Cài được như app** | PWA: thêm vào màn hình chính, chạy full màn hình, mở được offline (phần dịch vẫn cần mạng). |
 
@@ -97,6 +99,30 @@ App nhồi sẵn bảng thuật ngữ này vào prompt, nên Claude dịch đún
 
 ---
 
+## Đưa lên mạng để dùng mọi lúc
+
+Chạy ở máy nhà thì phải bật máy tính và chung Wi‑Fi, lại bị trình duyệt chặn clipboard vì không có HTTPS.
+Đưa lên hosting là hết cả hai vấn đề. Repo có sẵn cấu hình cho Render (miễn phí):
+
+1. Vào https://dashboard.render.com → **New** → **Blueprint** → chọn repo này. Render đọc `render.yaml` và tự dựng.
+2. Ở phần Environment, điền 2 biến:
+   - `ANTHROPIC_API_KEY` — key của bạn
+   - `APP_PASSCODE` — mật khẩu tự đặt, để người lạ không vào xài API key của bạn
+3. Deploy xong được địa chỉ `https://<tên-app>.onrender.com`. Mở trên điện thoại → **Thêm vào màn hình chính**.
+
+> Gói free của Render ngủ sau 15 phút không ai dùng; lần mở đầu tiên chờ khoảng 30 giây rồi chạy bình thường.
+
+Repo cũng có `Dockerfile` nên deploy được lên Fly.io, Railway, hay VPS bất kỳ:
+
+```bash
+docker build -t dich1688 .
+docker run -p 3000:3000 -e ANTHROPIC_API_KEY=sk-ant-... -e APP_PASSCODE=matkhaucuaban dich1688
+```
+
+**Nhớ:** `ANTHROPIC_API_KEY` chỉ đặt trong biến môi trường của hosting, đừng bao giờ commit vào repo.
+
+---
+
 ## Cấu hình (`.env`)
 
 | Biến | Mặc định | Ý nghĩa |
@@ -106,6 +132,7 @@ App nhồi sẵn bảng thuật ngữ này vào prompt, nên Claude dịch đún
 | `ANTHROPIC_API_KEY` | — | Bắt buộc nếu dùng `claude` |
 | `ANTHROPIC_MODEL` | `claude-opus-5` | Model dịch |
 | `ANTHROPIC_EFFORT` | `low` | `low` / `medium` / `high` — thấp thì nhanh và rẻ hơn |
+| `APP_PASSCODE` | (trống) | Mật khẩu vào app. Để trống = không hỏi mật khẩu |
 | `PORT` | `3000` | Cổng máy chủ |
 | `CONTEXT_TURNS` | `6` | Số tin gần nhất gửi kèm làm ngữ cảnh |
 | `MAX_INPUT_CHARS` | `4000` | Giới hạn độ dài một tin |
@@ -124,6 +151,7 @@ server/
   translate.js      điều phối: nhận diện hướng dịch, cache, chuyển dự phòng
   lang.js           nhận diện tiếng Việt / tiếng Trung
   glossary.js       từ điển thuật ngữ 1688 + mẫu câu
+  auth.js           mật khẩu, phiên đăng nhập, giới hạn tần suất
   cache.js          LRU
   providers/
     claude.js       gọi Claude API (prompt dịch + bảng thuật ngữ)
@@ -140,6 +168,8 @@ scripts/gen-icons.js  sinh icon PNG cho PWA (chạy tự động sau `npm instal
 | `GET /api/health` | Trạng thái công cụ dịch |
 | `GET /api/phrases` | Danh sách mẫu câu |
 | `GET /api/glossary` | Từ điển thuật ngữ |
+| `POST /api/login` | `{ passcode }` → đặt cookie phiên 90 ngày |
+| `POST /api/logout` | Xoá cookie phiên |
 
 ---
 
