@@ -7,8 +7,6 @@ Shop trả lời tiếng Trung → bạn dán vào app → ra tiếng Việt nga
 
 Toàn bộ hội thoại hiện dưới dạng khung chat quen thuộc, kèm bản gốc để đối chiếu.
 
-![icon](public/icons/icon-192.png)
-
 ---
 
 ## Điều cần biết trước
@@ -131,7 +129,7 @@ server/
     claude.js       gọi Claude API (prompt dịch + bảng thuật ngữ)
     google.js       Google Dịch miễn phí (dự phòng)
 public/             giao diện PWA (HTML/CSS/JS thuần, không framework)
-scripts/gen-icons.js  sinh icon PNG cho PWA
+scripts/gen-icons.js  sinh icon PNG cho PWA (chạy tự động sau `npm install`)
 ```
 
 ### API

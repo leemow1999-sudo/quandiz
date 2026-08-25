@@ -3,3 +3,6 @@ node_modules/
 .env.local
 *.log
 .DS_Store
+
+# icon PNG được sinh lại bằng `npm run icons` (chạy tự động sau npm install)
+public/icons/*.png
