@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dịch Chat 1688</title>
+<meta name="description" content="Nhắn tiếng Việt ra tiếng Trung, tin của shop ra tiếng Việt — trợ lý chat cho 1688." />
+<meta name="theme-color" content="#0f1115" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Dịch 1688" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">译</span>
+    <div class="brand-text">
+      <strong>Dịch Chat 1688</strong>
+      <span id="status" class="status">Đang kiểm tra…</span>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button type="button" class="icon-btn" data-sheet="phrases" title="Mẫu câu">💬</button>
+    <button type="button" class="icon-btn" data-sheet="glossary" title="Từ điển 1688">📖</button>
+    <button type="button" class="icon-btn" data-sheet="settings" title="Cài đặt">⚙️</button>
+  </div>
+</header>
+
+<main id="chat" class="chat" aria-live="polite">
+  <div class="empty" id="empty">
+    <div class="empty-icon">⇄</div>
+    <h2>Gõ tiếng Việt → ra tiếng Trung</h2>
+    <p>Dán tin tiếng Trung của shop → ra tiếng Việt. App tự nhận biết ngôn ngữ, bạn không cần chọn gì.</p>
+    <ol class="empty-steps">
+      <li>Gõ câu tiếng Việt rồi bấm gửi — bản tiếng Trung tự copy vào clipboard.</li>
+      <li>Sang app 1688, dán vào khung chat của shop.</li>
+      <li>Shop trả lời, copy tin tiếng Trung, quay lại đây dán vào và gửi.</li>
+    </ol>
+  </div>
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
+<form id="composer" class="composer">
+  <div class="composer-top">
+    <div class="seg" role="group" aria-label="Hướng dịch">
+      <button type="button" class="seg-btn is-active" data-dir="auto">Tự động</button>
+      <button type="button" class="seg-btn" data-dir="vi2zh">VI → 中文</button>
+      <button type="button" class="seg-btn" data-dir="zh2vi">中文 → VI</button>
+    </div>
+    <button type="button" id="paste" class="ghost-btn" title="Dán từ clipboard">📋 Dán</button>
+  </div>
+  <div class="composer-row">
+    <textarea id="input" rows="1" placeholder="Nhắn tiếng Việt hoặc dán tin tiếng Trung…" enterkeyhint="send"></textarea>
+    <button type="submit" id="send" class="send-btn" aria-label="Dịch và gửi">➤</button>
+  </div>
+</form>
+
+<!-- Sheets -->
+<div class="sheet-backdrop" id="backdrop" hidden></div>
+
+<section class="sheet" id="sheet-phrases" hidden>
+  <div class="sheet-head"><h3>Mẫu câu hay dùng</h3><button type="button" class="icon-btn" data-close>✕</button></div>
+  <div class="sheet-body" id="phrases-body"></div>
+</section>
+
+<section class="sheet" id="sheet-glossary" hidden>
+  <div class="sheet-head"><h3>Từ điển 1688</h3><button type="button" class="icon-btn" data-close>✕</button></div>
+  <div class="sheet-search"><input type="search" id="glossary-search" placeholder="Tìm từ tiếng Việt hoặc tiếng Trung…" /></div>
+  <div class="sheet-body" id="glossary-body"></div>
+</section>
+
+<section class="sheet" id="sheet-settings" hidden>
+  <div class="sheet-head"><h3>Cài đặt</h3><button type="button" class="icon-btn" data-close>✕</button></div>
+  <div class="sheet-body">
+    <label class="row-toggle">
+      <span><strong>Tự động copy</strong><small>Dịch xong tự chép bản tiếng Trung vào clipboard</small></span>
+      <input type="checkbox" id="opt-autocopy" checked />
+    </label>
+    <label class="row-toggle">
+      <span><strong>Dùng ngữ cảnh hội thoại</strong><small>Gửi kèm vài tin gần nhất để dịch sát nghĩa hơn</small></span>
+      <input type="checkbox" id="opt-context" checked />
+    </label>
+    <label class="row-toggle">
+      <span><strong>Hiện bản gốc</strong><small>Hiển thị câu gốc bên dưới bản dịch</small></span>
+      <input type="checkbox" id="opt-original" checked />
+    </label>
+    <div class="info" id="engine-info">…</div>
+    <button type="button" class="danger-btn" id="clear-history">Xoá toàn bộ hội thoại</button>
+  </div>
+</section>
+
+<script src="app.js" type="module"></script>
+</body>
+</html>
