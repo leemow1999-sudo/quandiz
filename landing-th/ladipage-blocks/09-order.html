@@ -1,0 +1,110 @@
+<!-- BLOCK 09 — เลือกแพ็ก + ฟอร์มสั่งซื้อ COD (ส่วนสำคัญที่สุด) -->
+<div class="lp">
+  <section class="lp-sec lp-sec--soft" id="order">
+    <div class="lp-wrap lp-wrap--narrow">
+
+      <p class="lp-eyebrow lp-center">สั่งซื้อ</p>
+      <h2 class="lp-h2 lp-center" style="margin:8px 0 6px">เลือกแพ็กที่ต้องการ</h2>
+      <p class="lp-sm lp-center" style="margin-bottom:18px">ยิ่งสั่งหลายเครื่อง ยิ่งถูกลงต่อเครื่อง · ส่งฟรีทุกแพ็ก</p>
+
+      <div class="lp-stack" id="lpPacks" style="margin-bottom:6px">
+        <label class="lp-pack">
+          <input type="radio" name="pack" value="1 เครื่อง" data-qty="1" data-price="890">
+          <div class="row">
+            <div><p style="font-weight:700">1 เครื่อง</p><p class="lp-xs">ลองใช้ก่อน</p></div>
+            <div class="lp-center"><p class="p">฿890</p><p class="lp-xs"><s>฿1,690</s></p></div>
+          </div>
+        </label>
+
+        <label class="lp-pack is-best">
+          <span class="tag">ยอดนิยม · คุ้มสุด</span>
+          <input type="radio" name="pack" value="2 เครื่อง" data-qty="2" data-price="1590" checked>
+          <div class="row">
+            <div><p style="font-weight:700">2 เครื่อง <span class="lp-badge lp-badge--green" style="font-size:11.5px;padding:2px 8px">ประหยัด ฿190</span></p>
+                 <p class="lp-xs">ไว้ในรถ 1 · ไว้ที่บ้าน 1</p></div>
+            <div class="lp-center"><p class="p">฿1,590</p><p class="lp-xs">เฉลี่ย ฿795/เครื่อง</p></div>
+          </div>
+        </label>
+
+        <label class="lp-pack">
+          <input type="radio" name="pack" value="3 เครื่อง" data-qty="3" data-price="2190">
+          <div class="row">
+            <div><p style="font-weight:700">3 เครื่อง <span class="lp-badge lp-badge--green" style="font-size:11.5px;padding:2px 8px">ประหยัด ฿480</span></p>
+                 <p class="lp-xs">ซื้อฝากพ่อแม่ / ร้านค้า</p></div>
+            <div class="lp-center"><p class="p">฿2,190</p><p class="lp-xs">เฉลี่ย ฿730/เครื่อง</p></div>
+          </div>
+        </label>
+      </div>
+
+      <div class="lp-form" style="margin-top:18px">
+        <div class="lp-form-body">
+          <h3 class="lp-h3 lp-center" style="margin-bottom:4px">กรอกที่อยู่จัดส่ง</h3>
+          <p class="lp-xs lp-center" style="margin-bottom:16px">ไม่ต้องโอนเงิน · จ่ายเงินสดตอนรับของกับพนักงานส่ง</p>
+
+          <form id="lpOrderForm" novalidate>
+            <div class="lp-field">
+              <label for="lpName">ชื่อ–นามสกุลผู้รับ <em>*</em></label>
+              <input class="lp-input" id="lpName" name="name" type="text" autocomplete="name" placeholder="เช่น สมชาย ใจดี">
+              <p class="lp-err">กรุณากรอกชื่อ–นามสกุล</p>
+            </div>
+
+            <div class="lp-field">
+              <label for="lpPhone">เบอร์โทรศัพท์ <em>*</em></label>
+              <input class="lp-input" id="lpPhone" name="phone" type="tel" inputmode="numeric"
+                     autocomplete="tel" maxlength="12" placeholder="08XXXXXXXX">
+              <p class="lp-err">กรุณากรอกเบอร์มือถือ 9–10 หลัก (เช่น 0812345678)</p>
+            </div>
+
+            <div class="lp-field">
+              <label for="lpAddr">ที่อยู่จัดส่ง <em>*</em></label>
+              <textarea class="lp-textarea" id="lpAddr" name="address" autocomplete="street-address"
+                        placeholder="บ้านเลขที่ / หมู่บ้าน / ซอย / ถนน / ตำบล–แขวง / อำเภอ–เขต"></textarea>
+              <p class="lp-err">กรุณากรอกที่อยู่สำหรับจัดส่ง</p>
+            </div>
+
+            <div class="lp-grid lp-grid--2" style="gap:10px">
+              <div class="lp-field">
+                <label for="lpProvince">จังหวัด <em>*</em></label>
+                <select class="lp-select" id="lpProvince" name="province">
+                  <option value="">-- เลือกจังหวัด --</option>
+                </select>
+                <p class="lp-err">กรุณาเลือกจังหวัด</p>
+              </div>
+              <div class="lp-field">
+                <label for="lpZip">รหัสไปรษณีย์ <em>*</em></label>
+                <input class="lp-input" id="lpZip" name="zip" type="tel" inputmode="numeric"
+                       maxlength="5" autocomplete="postal-code" placeholder="10110">
+                <p class="lp-err">กรอกรหัสไปรษณีย์ 5 หลัก</p>
+              </div>
+            </div>
+
+            <div class="lp-field">
+              <label for="lpNote">หมายเหตุถึงผู้ส่ง (ถ้ามี)</label>
+              <input class="lp-input" id="lpNote" name="note" type="text" placeholder="เช่น โทรก่อนส่ง / ฝากไว้ที่นิติฯ">
+            </div>
+
+            <div class="lp-total">
+              <span>ยอดที่ต้องชำระปลายทาง<br><small style="font-weight:500;color:var(--muted)" id="lpPackLabel">2 เครื่อง · ส่งฟรี</small></span>
+              <b id="lpTotal">฿1,590</b>
+            </div>
+
+            <button type="submit" class="lp-btn">✅ ยืนยันสั่งซื้อ — เก็บเงินปลายทาง</button>
+            <p class="lp-xs lp-center" style="margin-top:10px">
+              กดยืนยันแล้วทีมงานจะโทรยืนยันออเดอร์ภายใน 1 ชั่วโมง (เวลาทำการ)<br>
+              ข้อมูลของคุณใช้เพื่อจัดส่งสินค้าเท่านั้น
+            </p>
+          </form>
+        </div>
+
+        <div class="lp-thanks">
+          <div class="ic">✅</div>
+          <h3 class="lp-h3">รับออเดอร์เรียบร้อยแล้ว!</h3>
+          <p class="lp-sm" style="margin-top:8px">ทีมงานจะโทรกลับเพื่อยืนยันที่อยู่ภายใน 1 ชั่วโมง<br>
+             กรุณารอรับสายจากเบอร์ <b data-lp="hotline">02-XXX-XXXX</b></p>
+          <p class="lp-xs" style="margin-top:14px">หมายเลขอ้างอิงออเดอร์: <b id="lpOrderId">—</b></p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

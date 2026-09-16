@@ -1,0 +1,206 @@
+<!-- ============================================================
+     BLOCK 00 — CSS & FONT (ดาน BLOCK NAY TRUOC TIEN / DÁN KHỐI NÀY ĐẦU TIÊN)
+     LadiPage: chèn 1 phần tử HTML ở đầu trang, dán toàn bộ khối này vào.
+     Các khối 01–14 sau đó chỉ là markup, dùng chung CSS ở đây.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- TOKENS ---------- */
+.lp,.lp *{box-sizing:border-box}
+.lp{
+  --ink:#15181D; --muted:#5B6472; --line:#E6E9F0; --soft:#F5F7FB; --white:#fff;
+  --brand:#FF5A1F; --brand-dk:#D8430C; --brand-lt:#FFF1EA;
+  --green:#12A150; --green-lt:#E8F7EF;
+  --gold:#F5A524; --red:#E5484D;
+  --r:16px; --r-sm:10px;
+  --sh:0 2px 8px rgba(16,24,40,.06),0 12px 28px rgba(16,24,40,.08);
+  --sh-cta:0 8px 20px rgba(255,90,31,.35);
+  font-family:'Noto Sans Thai','Prompt',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--ink); line-height:1.65; -webkit-font-smoothing:antialiased;
+  font-size:16px; background:var(--white);
+}
+.lp h1,.lp h2,.lp h3,.lp h4{font-family:'Prompt','Noto Sans Thai',sans-serif;line-height:1.3;margin:0;font-weight:700;letter-spacing:-.01em}
+.lp p{margin:0}
+.lp img{max-width:100%;display:block;height:auto}
+.lp a{color:inherit;text-decoration:none}
+
+/* ---------- HERO ---------- */
+.lp-hero{display:grid;gap:16px;grid-template-areas:"head" "media" "body";text-align:center}
+.lp-hero-head{grid-area:head}
+.lp-hero .lp-media{grid-area:media}
+.lp-hero-body{grid-area:body}
+
+/* ---------- LAYOUT ---------- */
+.lp-sec{padding:40px 16px;width:100%}
+.lp-sec--soft{background:var(--soft)}
+.lp-sec--ink{background:#111827;color:#fff}
+.lp-wrap{width:100%;max-width:720px;margin:0 auto}
+.lp-center{text-align:center}
+.lp-stack>*+*{margin-top:12px}
+
+/* ---------- TYPO ---------- */
+.lp-h1{font-size:30px;font-weight:800}
+.lp-h2{font-size:25px;font-weight:800}
+.lp-h3{font-size:19px;font-weight:700}
+.lp-lead{font-size:17px;color:var(--muted)}
+.lp-sm{font-size:14px;color:var(--muted)}
+.lp-xs{font-size:12.5px;color:var(--muted)}
+.lp-eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.lp-hl{background:linear-gradient(180deg,transparent 60%,#FFE3AE 60%);padding:0 2px}
+.lp-sec--ink .lp-lead,.lp-sec--ink .lp-sm{color:#B9C0CC}
+
+/* ---------- BADGE / PILL ---------- */
+.lp-badge{display:inline-flex;align-items:center;gap:6px;background:var(--brand-lt);color:var(--brand-dk);
+  font-weight:700;font-size:13.5px;padding:7px 14px;border-radius:999px}
+.lp-badge--green{background:var(--green-lt);color:#0B7A3B}
+.lp-badge--dark{background:rgba(255,255,255,.12);color:#fff}
+
+/* ---------- BUTTON ---------- */
+.lp-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  background:linear-gradient(180deg,#FF7A3D,#FF5A1F);color:#fff;font-family:'Prompt',sans-serif;
+  font-weight:700;font-size:19px;padding:17px 20px;border:0;border-radius:var(--r);
+  box-shadow:var(--sh-cta);cursor:pointer;text-align:center}
+/* chỉ nút CTA dạng link mới nhấp nháy — nút submit trong form để yên cho khách bấm */
+a.lp-btn[data-lp-cta]{animation:lp-pulse 2.4s ease-in-out infinite}
+.lp-btn:active{transform:translateY(1px)}
+.lp-btn--ghost{background:#fff;color:var(--brand-dk);border:2px solid var(--brand);box-shadow:none;animation:none}
+@keyframes lp-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.022)}}
+@media (prefers-reduced-motion:reduce){.lp-btn,.lp-bar span{animation:none}}
+
+/* ---------- CARD ---------- */
+.lp-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.lp-grid{display:grid;gap:12px}
+.lp-grid--2{grid-template-columns:repeat(2,1fr)}
+@media (min-width:760px){.lp-grid--2{grid-template-columns:repeat(2,1fr)}.lp-grid--3{grid-template-columns:repeat(3,1fr)}}
+
+/* ---------- TRUST STRIP ---------- */
+.lp-trust{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.lp-trust div{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
+  background:var(--soft);border-radius:var(--r-sm);padding:10px 12px}
+.lp-trust span{font-size:17px;line-height:1}
+
+/* ---------- PRICE ---------- */
+.lp-price{display:flex;align-items:baseline;justify-content:center;gap:10px;flex-wrap:wrap}
+.lp-price b{font-family:'Prompt',sans-serif;font-size:40px;font-weight:800;color:var(--brand-dk);line-height:1}
+.lp-price s{font-size:19px;color:#98A2B3}
+.lp-save{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}
+
+/* ---------- COUNTDOWN ---------- */
+.lp-cd{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.lp-cd div{background:#111827;color:#fff;border-radius:10px;padding:8px 0;min-width:62px;text-align:center}
+.lp-cd b{display:block;font-family:'Prompt',sans-serif;font-size:23px;font-weight:700;line-height:1.15}
+.lp-cd small{font-size:11px;opacity:.7}
+
+/* ---------- LIST ---------- */
+.lp-check{list-style:none;padding:0;margin:0}
+.lp-check li{position:relative;padding-left:30px;margin-bottom:10px;font-size:15.5px}
+.lp-check li:before{content:"";position:absolute;left:0;top:6px;width:20px;height:20px;border-radius:50%;
+  background:var(--green-lt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312A150' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/13px no-repeat}
+.lp-cross li:before{background:#FEEBEB url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E5484D' stroke-width='3.2' stroke-linecap='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E") center/12px no-repeat}
+
+/* ---------- TABLE ---------- */
+.lp-table{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.lp-table th,.lp-table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.lp-table th{background:var(--soft);font-weight:700;width:42%;color:var(--muted)}
+.lp-table tr:last-child th,.lp-table tr:last-child td{border-bottom:0}
+.lp-vs th{text-align:center;width:auto;color:var(--ink)}
+.lp-vs td{text-align:center;font-size:14px}
+.lp-vs td:first-child{text-align:left;font-weight:600}
+.lp-vs .yes{color:var(--green);font-weight:700}
+.lp-vs .no{color:#98A2B3}
+.lp-vs .col-us{background:var(--brand-lt)}
+
+/* ---------- STEP ---------- */
+.lp-step{display:flex;gap:14px;align-items:flex-start}
+.lp-step i{flex:0 0 38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;
+  font-family:'Prompt',sans-serif;font-style:normal;font-weight:700;font-size:17px;
+  display:flex;align-items:center;justify-content:center}
+
+/* ---------- REVIEW ---------- */
+.lp-stars{color:var(--gold);font-size:15px;letter-spacing:1px}
+.lp-rev-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.lp-avatar{width:44px;height:44px;border-radius:50%;background:var(--soft);flex:0 0 44px;object-fit:cover}
+.lp-score{display:flex;align-items:center;justify-content:center;gap:14px;background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:16px}
+.lp-score b{font-family:'Prompt',sans-serif;font-size:38px;font-weight:800;line-height:1}
+
+/* ---------- OFFER ---------- */
+.lp-pack{border:2px solid var(--line);border-radius:var(--r);padding:16px;background:#fff;position:relative;cursor:pointer;display:block}
+.lp-pack.is-best{border-color:var(--brand);box-shadow:var(--sh-cta)}
+.lp-pack .tag{position:absolute;top:-12px;left:16px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.lp-pack input{position:absolute;opacity:0;pointer-events:none}
+.lp-pack .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lp-pack .p{font-family:'Prompt',sans-serif;font-size:22px;font-weight:800;color:var(--brand-dk);white-space:nowrap}
+.lp-pack:has(input:checked){border-color:var(--brand);background:var(--brand-lt)}
+
+/* ---------- FORM ---------- */
+.lp-form{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.lp-field{margin-bottom:12px}
+.lp-field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.lp-field label em{color:var(--red);font-style:normal}
+.lp-input,.lp-select,.lp-textarea{width:100%;font-family:inherit;font-size:16px;color:var(--ink);
+  background:#fff;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:13px 14px;outline:0}
+.lp-input:focus,.lp-select:focus,.lp-textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,90,31,.12)}
+.lp-textarea{min-height:76px;resize:vertical}
+.lp-select{appearance:none;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.4' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") right 12px center/18px no-repeat;padding-right:40px}
+.lp-err{display:none;color:var(--red);font-size:13px;margin-top:5px;font-weight:600}
+.lp-field.has-err .lp-input,.lp-field.has-err .lp-select{border-color:var(--red)}
+.lp-field.has-err .lp-err{display:block}
+.lp-total{display:flex;justify-content:space-between;align-items:center;background:var(--soft);
+  border-radius:var(--r-sm);padding:13px 15px;margin:14px 0;font-weight:700}
+.lp-total b{font-family:'Prompt',sans-serif;font-size:24px;color:var(--brand-dk)}
+.lp-thanks{display:none;text-align:center;padding:26px 8px}
+.lp-thanks .ic{width:64px;height:64px;border-radius:50%;background:var(--green-lt);margin:0 auto 14px;
+  display:flex;align-items:center;justify-content:center;font-size:32px}
+.is-sent .lp-form-body{display:none}
+.is-sent .lp-thanks{display:block}
+
+/* ---------- FAQ ---------- */
+.lp-faq{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lp-faq details{border-bottom:1px solid var(--line)}
+.lp-faq details:last-child{border-bottom:0}
+.lp-faq summary{list-style:none;cursor:pointer;padding:15px 44px 15px 16px;font-weight:600;font-size:15.5px;position:relative}
+.lp-faq summary::-webkit-details-marker{display:none}
+.lp-faq summary:after{content:"+";position:absolute;right:16px;top:12px;font-size:23px;color:var(--brand);font-weight:400}
+.lp-faq details[open] summary:after{content:"–"}
+.lp-faq .a{padding:0 16px 15px;font-size:15px;color:var(--muted)}
+
+/* ---------- MARQUEE ---------- */
+.lp-bar{background:#111827;color:#fff;overflow:hidden;white-space:nowrap;padding:9px 0;font-size:13.5px;font-weight:600}
+.lp-bar span{display:inline-block;padding-left:100%;animation:lp-mq 18s linear infinite}
+@keyframes lp-mq{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+/* ---------- STICKY CTA ---------- */
+.lp-sticky{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:9px 14px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 -6px 20px rgba(16,24,40,.1);
+  transform:translateY(120%);transition:transform .28s ease}
+.lp-sticky.on{transform:translateY(0)}
+.lp-sticky .pr{line-height:1.25}
+.lp-sticky .pr b{font-family:'Prompt',sans-serif;font-size:21px;font-weight:800;color:var(--brand-dk)}
+.lp-sticky .pr s{font-size:12.5px;color:#98A2B3;margin-left:5px}
+.lp-sticky .lp-btn{width:auto;flex:1;font-size:16.5px;padding:13px 16px;animation:none}
+body.lp-has-sticky{padding-bottom:78px}
+
+/* ---------- DESKTOP ---------- */
+@media (min-width:900px){
+  .lp-sec{padding:64px 24px}
+  .lp-h1{font-size:44px}
+  .lp-h2{font-size:34px}
+  .lp-wrap{max-width:1000px}
+  .lp-wrap--narrow{max-width:720px}
+  .lp-hero{grid-template-columns:1fr 1fr;grid-template-areas:"media head" "media body";
+    column-gap:44px;row-gap:12px;align-content:center;text-align:left}
+  .lp-hero .lp-price{justify-content:flex-start}
+  .lp-hero .lp-cd{justify-content:flex-start}
+  .lp-hero .lp-btn{min-width:0;width:100%}
+  .lp-trust{grid-template-columns:repeat(4,1fr)}
+  .lp-btn{width:auto;min-width:340px}
+  .lp-sticky{display:none}
+  body.lp-has-sticky{padding-bottom:0}
+}
+</style>

@@ -1,0 +1,229 @@
+<!-- ============================================================
+     BLOCK 99 — JAVASCRIPT (ดาน BLOCK NAY CUOI CUNG / DÁN KHỐI NÀY CUỐI TRANG)
+     Gồm: đồng hồ đếm ngược, chọn pack, tính tiền, validate + gửi đơn COD,
+           thanh CTA dính đáy, bắn sự kiện Facebook Pixel.
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     ⚙️  CẤU HÌNH — SỬA 5 DÒNG NÀY LÀ CHẠY ĐƯỢC
+     ============================================================ */
+  var CONFIG = {
+    // URL Google Apps Script nhận đơn (xem docs/google-apps-script.js).
+    // Để rỗng '' thì form vẫn chạy, đơn chỉ hiện trong Console (dùng để test).
+    WEBHOOK_URL: '',
+
+    // Đồng hồ đếm ngược: 'midnight' = đếm tới 23:59 hôm nay (tự reset mỗi ngày)
+    // hoặc đặt số phút cố định cho mỗi khách, ví dụ: 30
+    COUNTDOWN: 'midnight',
+
+    CURRENCY: 'THB',
+    FREE_SHIPPING: true,
+
+    // Bắn event Pixel (cần đã gắn Pixel ở Cài đặt LadiPage hoặc block 15)
+    PIXEL: true
+  };
+
+  /* ============================================================
+     77 จังหวัดของไทย
+     ============================================================ */
+  var PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พะเยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+  var $  = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var baht = function (n) { return '฿' + Number(n).toLocaleString('en-US'); };
+
+  function track(ev, data) {
+    if (!CONFIG.PIXEL || typeof window.fbq !== 'function') return;
+    try { window.fbq('track', ev, data || {}); } catch (e) {}
+  }
+
+  /* ---------- 1. จังหวัด dropdown ---------- */
+  var sel = $('#lpProvince');
+  if (sel && sel.options.length <= 1) {
+    var frag = document.createDocumentFragment();
+    PROVINCES.forEach(function (p) {
+      var o = document.createElement('option');
+      o.value = p; o.textContent = p; frag.appendChild(o);
+    });
+    sel.appendChild(frag);
+  }
+
+  /* ---------- 2. นับถอยหลัง ---------- */
+  var cd = $('#lpCountdown');
+  if (cd) {
+    var deadline;
+    if (CONFIG.COUNTDOWN === 'midnight') {
+      deadline = new Date(); deadline.setHours(23, 59, 59, 999);
+    } else {
+      var KEY = 'lp_deadline';
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+      if (saved && Number(saved) > Date.now()) {
+        deadline = new Date(Number(saved));
+      } else {
+        deadline = new Date(Date.now() + Number(CONFIG.COUNTDOWN) * 60000);
+        try { localStorage.setItem(KEY, String(deadline.getTime())); } catch (e) {}
+      }
+    }
+    var cH = $('[data-cd="h"]', cd), cM = $('[data-cd="m"]', cd), cS = $('[data-cd="s"]', cd);
+    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
+    (function tick() {
+      var left = Math.max(0, deadline - Date.now());
+      var t = Math.floor(left / 1000);
+      if (cH) cH.textContent = pad(Math.floor(t / 3600));
+      if (cM) cM.textContent = pad(Math.floor(t % 3600 / 60));
+      if (cS) cS.textContent = pad(t % 60);
+      setTimeout(tick, 1000);
+    })();
+  }
+
+  /* ---------- 3. เลือกแพ็ก + คิดยอดรวม ---------- */
+  var packs = $$('#lpPacks input[name="pack"]');
+  var elTotal = $('#lpTotal'), elLabel = $('#lpPackLabel');
+  function currentPack() {
+    var c = packs.filter(function (i) { return i.checked; })[0] || packs[0];
+    return c ? { name: c.value, qty: +c.dataset.qty, price: +c.dataset.price } : { name: '', qty: 1, price: 0 };
+  }
+  function renderTotal() {
+    var p = currentPack();
+    if (elTotal) elTotal.textContent = baht(p.price);
+    if (elLabel) elLabel.textContent = p.name + (CONFIG.FREE_SHIPPING ? ' · ส่งฟรี' : '');
+    $$('#lpPacks .lp-pack').forEach(function (el) {
+      el.classList.toggle('is-selected', !!$('input', el) && $('input', el).checked);
+    });
+  }
+  packs.forEach(function (i) { i.addEventListener('change', renderTotal); });
+  renderTotal();
+
+  /* ---------- 4. ฟอร์มสั่งซื้อ ---------- */
+  var form = $('#lpOrderForm');
+  if (form) {
+    var started = false;
+    form.addEventListener('focusin', function () {
+      if (started) return;
+      started = true;
+      track('InitiateCheckout', { value: currentPack().price, currency: CONFIG.CURRENCY });
+    });
+
+    // เบอร์โทร/รหัสไปรษณีย์ พิมพ์ได้เฉพาะตัวเลข
+    ['#lpPhone', '#lpZip'].forEach(function (s) {
+      var el = $(s);
+      if (el) el.addEventListener('input', function () { el.value = el.value.replace(/\D/g, ''); });
+    });
+
+    var RULES = [
+      ['#lpName',     function (v) { return v.trim().length >= 2; }],
+      ['#lpPhone',    function (v) { return /^0\d{8,9}$/.test(v.trim()); }],
+      ['#lpAddr',     function (v) { return v.trim().length >= 10; }],
+      ['#lpProvince', function (v) { return v !== ''; }],
+      ['#lpZip',      function (v) { return /^\d{5}$/.test(v.trim()); }]
+    ];
+
+    function validate() {
+      var firstBad = null;
+      RULES.forEach(function (r) {
+        var el = $(r[0]); if (!el) return;
+        var field = el.closest('.lp-field');
+        var ok = r[1](el.value);
+        if (field) field.classList.toggle('has-err', !ok);
+        if (!ok && !firstBad) firstBad = el;
+      });
+      return firstBad;
+    }
+    RULES.forEach(function (r) {
+      var el = $(r[0]); if (!el) return;
+      el.addEventListener('blur', function () {
+        var f = el.closest('.lp-field');
+        if (f) f.classList.toggle('has-err', !r[1](el.value));
+      });
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var bad = validate();
+      if (bad) { bad.focus(); bad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+
+      var btn = $('button[type="submit"]', form);
+      if (btn) { btn.disabled = true; btn.textContent = 'กำลังส่งข้อมูล...'; }
+
+      var p = currentPack();
+      var orderId = 'TH' + Date.now().toString(36).toUpperCase().slice(-6);
+      var payload = {
+        order_id : orderId,
+        name     : $('#lpName').value.trim(),
+        phone    : $('#lpPhone').value.trim(),
+        address  : $('#lpAddr').value.trim(),
+        province : $('#lpProvince').value,
+        zip      : $('#lpZip').value.trim(),
+        note     : ($('#lpNote') || {}).value || '',
+        product  : ($('[data-lp="product-name"]') || {}).textContent || '',
+        pack     : p.name,
+        qty      : p.qty,
+        total    : p.price,
+        currency : CONFIG.CURRENCY,
+        page_url : location.href,
+        referrer : document.referrer,
+        utm      : location.search,
+        ts       : new Date().toISOString()
+      };
+
+      function done() {
+        var box = form.closest('.lp-form');
+        if (box) box.classList.add('is-sent');
+        var idEl = $('#lpOrderId'); if (idEl) idEl.textContent = orderId;
+        track('Lead',     { value: p.price, currency: CONFIG.CURRENCY, content_name: payload.product });
+        track('Purchase', { value: p.price, currency: CONFIG.CURRENCY, content_name: payload.product, num_items: p.qty });
+        if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      if (!CONFIG.WEBHOOK_URL) {
+        console.log('[LP] ยังไม่ได้ตั้งค่า WEBHOOK_URL — ออเดอร์ทดสอบ:', payload);
+        done(); return;
+      }
+
+      var fd = new FormData();
+      Object.keys(payload).forEach(function (k) { fd.append(k, payload[k]); });
+      fetch(CONFIG.WEBHOOK_URL, { method: 'POST', mode: 'no-cors', body: fd })
+        .then(done)
+        .catch(function (err) {
+          console.error('[LP] ส่งออเดอร์ไม่สำเร็จ', err);
+          done(); // ยังแสดงหน้าขอบคุณ แล้วให้ทีมงานโทรกลับ
+        });
+    });
+  }
+
+  /* ---------- 5. แถบลอยด้านล่าง ---------- */
+  var sticky = $('#lpSticky');
+  if (sticky) {
+    document.body.classList.add('lp-has-sticky');
+    var orderSec = $('#order');
+    window.addEventListener('scroll', function () {
+      var past = window.scrollY > 420;
+      var inForm = orderSec && orderSec.getBoundingClientRect().top < window.innerHeight * 0.75
+                            && orderSec.getBoundingClientRect().bottom > 0;
+      sticky.classList.toggle('on', past && !inForm);
+    }, { passive: true });
+  }
+
+  /* ---------- 6. เลื่อนนุ่ม + นับคลิก CTA ---------- */
+  $$('[data-lp-cta]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = $('#order');
+      if (t) {
+        e.preventDefault();
+        t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function () { var n = $('#lpName'); if (n) n.focus({ preventScroll: true }); }, 600);
+      }
+      track('AddToCart', { value: currentPack().price, currency: CONFIG.CURRENCY });
+    });
+  });
+
+  /* ---------- 7. ปีใน footer ---------- */
+  $$('[data-lp="year"]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+  track('ViewContent', { value: currentPack().price, currency: CONFIG.CURRENCY });
+})();
+</script>
