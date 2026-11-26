@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Chatbot Pancake</title>
+<meta name="theme-color" content="#0f1115" />
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="bot.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="mark">🤖</span>
+    <div>
+      <strong>Chatbot Pancake</strong>
+      <div class="sub" id="sub">Đang tải…</div>
+    </div>
+  </div>
+  <button type="button" class="ghost" id="logout" hidden>Đăng xuất</button>
+</header>
+
+<main class="wrap">
+
+  <section class="card" id="login" hidden>
+    <h2>Nhập mật khẩu</h2>
+    <form id="login-form" class="row">
+      <input type="password" id="passcode" placeholder="APP_PASSCODE" autocomplete="current-password" required />
+      <button type="submit">Vào</button>
+    </form>
+    <p class="err" id="login-err"></p>
+  </section>
+
+  <div id="app" hidden>
+    <section class="card">
+      <h2>Chế độ</h2>
+      <div class="seg" id="mode">
+        <button type="button" data-mode="off">Tắt</button>
+        <button type="button" data-mode="shadow">Chạy thử</button>
+        <button type="button" data-mode="auto">Tự trả lời</button>
+      </div>
+      <p class="hint" id="mode-hint"></p>
+      <ul class="warn" id="warnings"></ul>
+    </section>
+
+    <nav class="tabs" id="tabs">
+      <button type="button" data-tab="log" class="on">Nhật ký</button>
+      <button type="button" data-tab="test">Chat thử</button>
+      <button type="button" data-tab="setup">Cài đặt</button>
+    </nav>
+
+    <section class="card tab" data-tab="log">
+      <div class="row between">
+        <h2>Hoạt động gần đây</h2>
+        <button type="button" class="ghost" id="refresh">Tải lại</button>
+      </div>
+      <div id="paused"></div>
+      <div id="log" class="log"></div>
+    </section>
+
+    <section class="card tab" data-tab="test" hidden>
+      <div class="row between">
+        <h2>Chat thử với bot</h2>
+        <button type="button" class="ghost" id="test-reset">Xoá</button>
+      </div>
+      <p class="hint">Bạn đóng vai khách. Bot trả lời theo file kiến thức của shop. Không gửi gì lên Pancake.</p>
+      <div id="test-chat" class="chat"></div>
+      <form id="test-form" class="row">
+        <input type="text" id="test-input" placeholder="Nhắn như khách, vd: áo thun còn size M không shop" autocomplete="off" required />
+        <button type="submit" id="test-send">Gửi</button>
+      </form>
+    </section>
+
+    <section class="card tab" data-tab="setup" hidden>
+      <h2>Kết nối Pancake</h2>
+      <dl class="kv" id="setup"></dl>
+      <h2>Kiến thức của shop</h2>
+      <p class="hint" id="kb-file"></p>
+      <pre id="kb" class="kb"></pre>
+    </section>
+  </div>
+</main>
+
+<script src="bot.js"></script>
+</body>
+</html>

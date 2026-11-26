@@ -12,11 +12,17 @@ import {
   requireAuth,
   setSessionCookie,
 } from './auth.js';
+import { createBotRouter } from './bot/routes.js';
+import * as bot from './bot/engine.js';
 
 const app = express();
 
 // Sau reverse proxy (Render, Fly, Cloudflare) thì req.ip và req.secure mới đúng.
 app.set('trust proxy', 1);
+
+// Chatbot Pancake: webhook + API trang quản trị. Gắn trước bộ đọc JSON chung vì webhook
+// có thể to hơn 256kb (kèm thông tin bài viết).
+app.use(createBotRouter());
 
 app.use(express.json({ limit: '256kb' }));
 app.use(
@@ -97,6 +103,8 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(config.port, config.host, () => {
+  bot.start();
+  const botStatus = bot.status();
   const ready = availableProviders();
   console.log(`\n  1688 Dịch Chat — http://localhost:${config.port}`);
   console.log(`  Công cụ dịch: ${ready.length ? ready.join(' -> ') : 'CHƯA CẤU HÌNH'}`);
@@ -104,5 +112,11 @@ app.listen(config.port, config.host, () => {
   if (!hasClaude()) {
     console.log('  Mẹo: thêm ANTHROPIC_API_KEY vào .env để dịch chuẩn tiếng lóng 1688.');
   }
-  console.log('  Mở trên điện thoại: dùng IP LAN của máy này, ví dụ http://192.168.1.x:' + config.port + '\n');
+  console.log('  Mở trên điện thoại: dùng IP LAN của máy này, ví dụ http://192.168.1.x:' + config.port);
+  console.log(
+    `  Chatbot Pancake: ${botStatus.pages.length} page, chế độ ${botStatus.mode.toUpperCase()}` +
+      ` — quản trị tại http://localhost:${config.port}/bot/`
+  );
+  for (const w of botStatus.warnings) console.log(`    ! ${w}`);
+  console.log('');
 });

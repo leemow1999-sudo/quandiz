@@ -12,7 +12,8 @@
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
     "icons": "node scripts/gen-icons.js",
-    "postinstall": "node scripts/gen-icons.js"
+    "postinstall": "node scripts/gen-icons.js",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",

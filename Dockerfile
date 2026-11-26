@@ -10,6 +10,7 @@ COPY public ./public
 RUN npm ci --omit=dev
 
 COPY server ./server
+COPY bot ./bot
 
 EXPOSE 3000
 CMD ["node", "server/index.js"]

@@ -1,5 +1,5 @@
 // Cache vỏ ứng dụng để mở được offline; API luôn đi thẳng ra mạng.
-const CACHE = 'quandiz-v1';
+const CACHE = 'quandiz-v2';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icons/icon.svg'];
 
 self.addEventListener('install', (event) => {
@@ -22,6 +22,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
   if (url.pathname.startsWith('/api/')) return; // dịch thuật phải luôn online
+  if (url.pathname.startsWith('/bot')) return; // trang quản trị chatbot luôn lấy bản mới
 
   // Điều hướng: ưu tiên mạng, rớt mạng thì lấy vỏ đã cache (giữ được share target).
   if (request.mode === 'navigate') {
